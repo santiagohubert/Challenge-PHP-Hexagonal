@@ -1,7 +1,15 @@
 {
     "name": "santiagohubert/challenge-php-hexagonal",
     "type": "project",
-    "description": "API REST de GIFs con arquitectura hexagonal, DDD y Laravel 11",
+    "description": "API REST de GIFs — Laravel 11, arquitectura hexagonal, GIPHY, OAuth2",
+    "keywords": [
+        "php",
+        "laravel",
+        "hexagonal-architecture",
+        "oauth2",
+        "giphy",
+        "docker"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",

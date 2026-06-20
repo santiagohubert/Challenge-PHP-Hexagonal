@@ -1,5 +1,7 @@
 # Challenge PHP Hexagonal
 
+> API REST de GIFs — Laravel 11, arquitectura hexagonal, GIPHY, OAuth2
+
 API REST de GIFs desarrollada con **PHP 8.3**, **Laravel 11**, **MariaDB**, **Docker** y **arquitectura hexagonal + DDD**.
 
 Integra la API externa de [GIPHY](https://developers.giphy.com/docs/api/) y expone servicios autenticados con **OAuth2 (Laravel Passport)**.
