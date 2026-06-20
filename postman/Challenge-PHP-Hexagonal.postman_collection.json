@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "challenge-php-hexagonal-collection",
+		"name": "Challenge PHP Hexagonal",
+		"description": "Colección de servicios REST del desafío PHP Hexagonal. El login guarda automáticamente el token OAuth2 en el environment.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"",
+									"if (json.access_token) {",
+									"    pm.environment.set('access_token', json.access_token);",
+									"    pm.environment.set('token_type', json.token_type);",
+									"    pm.environment.set('expires_in', json.expires_in);",
+									"}",
+									"",
+									"pm.test('Token was stored in environment', function () {",
+									"    pm.expect(pm.environment.get('access_token')).to.be.a('string').and.not.empty;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						},
+						"description": "Autentica un usuario y devuelve un token OAuth2 Bearer con expiración de 30 minutos."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GIFs",
+			"item": [
+				{
+					"name": "Search GIFs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/gifs/search?query={{search_query}}&limit={{search_limit}}&offset={{search_offset}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"gifs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "{{search_query}}",
+									"description": "Requerido. Término de búsqueda."
+								},
+								{
+									"key": "limit",
+									"value": "{{search_limit}}",
+									"description": "Opcional. Cantidad máxima de resultados."
+								},
+								{
+									"key": "offset",
+									"value": "{{search_offset}}",
+									"description": "Opcional. Desplazamiento de resultados."
+								}
+							]
+						},
+						"description": "Busca GIFs en GIPHY por una frase o término."
+					},
+					"response": []
+				},
+				{
+					"name": "Get GIF By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/gifs/{{gif_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"gifs",
+								"{{gif_id}}"
+							]
+						},
+						"description": "Obtiene la información de un GIF específico por ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Save Favorite GIF",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gif_id\": \"{{gif_id}}\",\n  \"alias\": \"{{favorite_alias}}\",\n  \"user_id\": {{user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/favorites",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"favorites"
+							]
+						},
+						"description": "Almacena un GIF favorito para un usuario."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
