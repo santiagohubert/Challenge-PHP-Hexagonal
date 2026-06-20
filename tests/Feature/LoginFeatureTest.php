@@ -2,22 +2,11 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Infrastructure\Persistence\Eloquent\Models\ApiRequestLogModel;
-use Tests\TestCase;
+use Infrastructure\Persistence\Eloquent\Models\UserModel;
 
-final class LoginFeatureTest extends TestCase
+final class LoginFeatureTest extends FeatureTestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->artisan('passport:install', ['--force' => true]);
-        $this->seed();
-    }
-
     public function test_login_returns_oauth_token_with_thirty_minute_expiration(): void
     {
         $response = $this->postJson('/api/login', [
@@ -52,9 +41,10 @@ final class LoginFeatureTest extends TestCase
         ])->assertOk();
 
         $log = ApiRequestLogModel::query()->where('service_name', 'login')->first();
+        $user = UserModel::query()->where('email', 'demo@challenge.test')->firstOrFail();
 
         $this->assertNotNull($log);
-        $this->assertSame(1, (int) $log->user_id);
+        $this->assertSame((int) $user->id, (int) $log->user_id);
         $this->assertSame(200, (int) $log->http_status_code);
         $this->assertSame('***', $log->request_body['password']);
     }

@@ -4,23 +4,11 @@ namespace Tests\Feature;
 
 use Domain\Gif\Gif;
 use Domain\Gif\GifProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Infrastructure\Persistence\Eloquent\Models\UserModel;
 use Laravel\Passport\Passport;
-use Tests\TestCase;
 
-final class SaveFavoriteGifFeatureTest extends TestCase
+final class SaveFavoriteGifFeatureTest extends FeatureTestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->artisan('passport:install', ['--force' => true]);
-        $this->seed();
-    }
-
     public function test_user_id_must_match_authenticated_user(): void
     {
         $user = UserModel::query()->where('email', 'demo@challenge.test')->firstOrFail();

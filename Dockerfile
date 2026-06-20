@@ -1,13 +1,8 @@
-FROM php:8.3-cli-alpine AS vendor
+FROM composer:2 AS vendor
 
 WORKDIR /app
 
-RUN apk add --no-cache git unzip libzip-dev \
-    && docker-php-ext-install zip
-
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-COPY composer.json ./
+COPY composer.json composer.lock ./
 
 ARG INSTALL_DEV=true
 
@@ -26,8 +21,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libpng-dev \
+    libicu-dev \
     default-mysql-client \
-    && docker-php-ext-install pdo_mysql zip \
+    && docker-php-ext-install pdo_mysql zip intl \
     && a2enmod rewrite \
     && sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
     && echo '<Directory /var/www/html/public>\n\

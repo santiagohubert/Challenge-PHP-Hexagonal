@@ -4,23 +4,11 @@ namespace Tests\Feature;
 
 use Domain\Gif\Gif;
 use Domain\Gif\GifProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Infrastructure\Persistence\Eloquent\Models\UserModel;
 use Laravel\Passport\Passport;
-use Tests\TestCase;
 
-final class ProtectedRoutesFeatureTest extends TestCase
+final class ProtectedRoutesFeatureTest extends FeatureTestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->artisan('passport:install', ['--force' => true]);
-        $this->seed();
-    }
-
     public function test_protected_endpoints_require_authentication(): void
     {
         $this->getJson('/api/gifs/search?query=cat')->assertUnauthorized();
